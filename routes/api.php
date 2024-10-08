@@ -14,4 +14,9 @@ Route::group([
     Route::post('register', [UserController::class, 'register']);
     Route::post('login', [UserController::class, 'login']);
     Route::post('logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
+    Route::group([
+        'prefix' => 'password-reset'
+    ], function () {
+        Route::get('request', [UserController::class, 'requestPasswordReset'])->name('password.reset');
+    });
 });

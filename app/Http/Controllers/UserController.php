@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterUserRequest;
+use App\Http\Requests\Auth\RequestPasswordResetRequest;
 use App\Repositories\UserRepository;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Password;
 
 class UserController extends Controller
 {
@@ -62,5 +64,20 @@ class UserController extends Controller
         return response()->json([
             'message' => Lang::get('auth.successfullyLoggedout')
         ], 200);
+    }
+
+    public function requestPasswordReset(RequestPasswordResetRequest $request)
+    {
+        $token = Password::sendResetLink(["email" => $request->email]);
+
+        if($token) {
+            return response()->json([
+                'message' => Lang::get('auth.successfullySentPasswordResetLink')
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => Lang::get('auth.invalidEmail')
+        ], 401);
     }
 }
