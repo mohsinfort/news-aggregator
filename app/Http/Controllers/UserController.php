@@ -6,6 +6,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterUserRequest;
 use App\Repositories\UserRepository;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Log;
@@ -52,5 +53,14 @@ class UserController extends Controller
             'access_token' => $user->createToken("API TOKEN")->plainTextToken,
             'message' => Lang::get('auth.successfullyLoggedIn'),
         ],200);
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'message' => Lang::get('auth.successfullyLoggedout')
+        ], 200);
     }
 }

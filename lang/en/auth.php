@@ -19,5 +19,6 @@ return [
 
     'successfullyCreatedAccount' => 'Account successfully created, please login to use the platform',
     'successfullyLoggedIn' => 'User Logged In Successfully',
+    'successfullyLoggedout' => 'User Logged Out Successfully',
     'invalidEmailOrPassword' => 'Invalid email or password',
 ];
