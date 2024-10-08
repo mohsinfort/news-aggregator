@@ -6,6 +6,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterUserRequest;
 use App\Repositories\UserRepository;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Log;
 
@@ -36,6 +37,20 @@ class UserController extends Controller
 
     public function login(LoginRequest $request)
     {
-        dd($request->all());
+        $credentials = [
+            'email' => $request->email,
+            'password' => $request->password,
+        ];
+
+        if(! Auth::attempt($credentials)) {
+            return response()->json(['errors' => Lang::get('auth.invalidEmailOrPassword')], 401);
+        }
+
+        $user = $this->userRepository->getUserByEmail($request->email);
+
+        return response()->json([
+            'access_token' => $user->createToken("API TOKEN")->plainTextToken,
+            'message' => Lang::get('auth.successfullyLoggedIn'),
+        ],200);
     }
 }

@@ -23,4 +23,9 @@ class UserRepository
             'email_verified_at' => Carbon::now(),
         ]);
     }
+
+    public function getUserByEmail(string $email)
+    {
+        return $this->user->where('email', $email)->first();
+    }
 }
