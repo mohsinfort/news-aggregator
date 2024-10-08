@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterUserRequest;
 use App\Http\Requests\Auth\RequestPasswordResetRequest;
+use App\Http\Requests\Auth\UpdatePasswordRequest;
 use App\Repositories\UserRepository;
 use Exception;
 use Illuminate\Http\Request;
@@ -78,6 +79,25 @@ class UserController extends Controller
 
         return response()->json([
             'message' => Lang::get('auth.invalidEmail')
+        ], 401);
+    }
+
+    public function updatePassword(UpdatePasswordRequest $request)
+    {
+        $user = $this->userRepository->getUserByEmail($request->email);
+
+        if($user &&  Password::tokenExists($user, $request->token)) {
+            $user->forceFill([
+                'password' => bcrypt($request->password),
+            ])->save();
+
+            return response()->json([
+                'message' => Lang::get('auth.successfullyUpdatedPassword')
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => Lang::get('auth.invalidTokenOrEmail')
         ], 401);
     }
 }

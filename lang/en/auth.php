@@ -18,9 +18,11 @@ return [
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
 
     'successfullyCreatedAccount' => 'Account successfully created, please login to use the platform',
-    'successfullyLoggedIn' => 'User Logged In Successfully',
-    'successfullyLoggedout' => 'User Logged Out Successfully',
+    'successfullyLoggedIn' => 'User Logged In successfully',
+    'successfullyLoggedout' => 'User Logged Out successfully',
     'successfullySentPasswordResetLink' => 'Password reset link sent to your email.',
+    'successfullyUpdatedPassword' => 'Password updated successfully',
+    'invalidTokenOrEmail' => 'Invalid token or email address.',
     'invalidEmailOrPassword' => 'Invalid email or password',
     'invalidEmail' => 'Invalid email address.',
 ];

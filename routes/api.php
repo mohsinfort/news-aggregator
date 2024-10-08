@@ -18,5 +18,6 @@ Route::group([
         'prefix' => 'password-reset'
     ], function () {
         Route::get('request', [UserController::class, 'requestPasswordReset'])->name('password.reset');
+        Route::put('', [UserController::class, 'updatePassword']);
     });
 });
