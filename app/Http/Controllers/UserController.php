@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterUserRequest;
 use App\Repositories\UserRepository;
 use Exception;
@@ -31,5 +32,10 @@ class UserController extends Controller
 
             return response()->json(['errors' => Lang::get('general.pleaseContactSupportWithCode', ['code' => 500])], 500);
         }
+    }
+
+    public function login(LoginRequest $request)
+    {
+        dd($request->all());
     }
 }
