@@ -18,7 +18,7 @@ class NewsRepository
         return News::insert($data);
     }
 
-    public function getNews()
+    public function getNewsList()
     {
         return $this->news
             ->select('id', 'title', 'url','type')

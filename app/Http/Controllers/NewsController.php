@@ -15,7 +15,7 @@ class NewsController extends Controller
 
     public function index()
     {
-        $data = $this->newsRepository->getNews();
+        $data = $this->newsRepository->getNewsList();
 
         return response()->json($data, 200);
     }
