@@ -17,4 +17,11 @@ class NewsRepository
     {
         return News::insert($data);
     }
+
+    public function getNews()
+    {
+        return $this->news
+            ->select('id', 'title', 'url','type')
+            ->paginate(15);
+    }
 }
