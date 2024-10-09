@@ -28,4 +28,5 @@ Route::group([
     'prefix' => 'news'
 ], function() {
     Route::get('', [NewsController::class, 'index']);
+    Route::get('{id}', [NewsController::class, 'getNewsById']);
 });

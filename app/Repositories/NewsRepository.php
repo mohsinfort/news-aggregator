@@ -40,4 +40,11 @@ class NewsRepository
             })
             ->paginate(15);
     }
+
+    public function getNewsById(int $id)
+    {
+        return $this->news
+            ->where('id', $id)
+            ->first();
+    }
 }
