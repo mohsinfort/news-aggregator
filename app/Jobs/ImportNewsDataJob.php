@@ -2,8 +2,10 @@
 
 namespace App\Jobs;
 
+use App\Repositories\NewsRepository;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 
 class ImportNewsDataJob implements ShouldQueue
@@ -39,6 +41,8 @@ class ImportNewsDataJob implements ShouldQueue
     public function handle(): void
     {
         $newsApiData = $this->getNewsData($this->newsApiUrl, 'country=us&apiKey='.$this->newsApikey);
+        $extractedData = $this->prepareNewsApiData($newsApiData);
+        NewsRepository::importNewsData($extractedData);
 
         $newYorkTimesData = $this->getNewsData($this->newYorkTimesApiUrl, 'api-key='.$this->newYorkTimesApiKey);
 
@@ -50,5 +54,27 @@ class ImportNewsDataJob implements ShouldQueue
         $response = Http::get($url.'?'.$params);
 
         return $response->json();
+    }
+
+    private function prepareNewsApiData($data)
+    {
+        $extractedData = [];
+        $articles = $data["articles"];
+
+        foreach ($articles as $item) {
+            $newItem = [
+                "title" => $item['title'],
+                "description" => $item['description'],
+                "url" => $item['url'],
+                "published_at" => Carbon::parse($item['publishedAt']),
+                "type" => "general",
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()
+            ];
+
+            array_push($extractedData, $newItem);
+        }
+
+        return $extractedData;
     }
 }
