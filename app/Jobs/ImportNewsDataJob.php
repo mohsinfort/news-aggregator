@@ -45,8 +45,12 @@ class ImportNewsDataJob implements ShouldQueue
         NewsRepository::importNewsData($extractedData);
 
         $newYorkTimesData = $this->getNewsData($this->newYorkTimesApiUrl, 'api-key='.$this->newYorkTimesApiKey);
+        $extractedData = $this->prepareNewYorkTimesData($newYorkTimesData);
+        NewsRepository::importNewsData($extractedData);
 
-        $theGuardianData = $this->getNewsData($this->theGuardianAPIUrl, 'api-key='.$this->theGuardianApiKey);
+        $guardianData = $this->getNewsData($this->theGuardianAPIUrl, 'api-key='.$this->theGuardianApiKey);
+        $extractedData = $this->prepareGuardianData($guardianData);
+        NewsRepository::importNewsData($extractedData);
     }
 
     private function getNewsData(string $url, string $params)
@@ -68,6 +72,50 @@ class ImportNewsDataJob implements ShouldQueue
                 "url" => $item['url'],
                 "published_at" => Carbon::parse($item['publishedAt']),
                 "type" => "general",
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()
+            ];
+
+            array_push($extractedData, $newItem);
+        }
+
+        return $extractedData;
+    }
+
+    private function prepareNewYorkTimesData($data)
+    {
+        $extractedData = [];
+        $articles = $data["results"];
+
+        foreach ($articles as $item) {
+            $newItem = [
+                "title" => $item['title'],
+                "description" => $item['abstract'],
+                "url" => $item['url'],
+                "published_at" => Carbon::parse($item['published_date']),
+                "type" => $item['section'],
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()
+            ];
+
+            array_push($extractedData, $newItem);
+        }
+
+        return $extractedData;
+    }
+
+    private function prepareGuardianData($data)
+    {
+        $extractedData = [];
+        $articles = $data["response"]["results"];
+
+        foreach ($articles as $item) {
+            $newItem = [
+                "title" => $item['webTitle'],
+                "description" => $item['webTitle'],
+                "url" => $item['webUrl'],
+                "published_at" => Carbon::parse($item['webPublicationDate']),
+                "type" => $item['sectionName'],
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ];

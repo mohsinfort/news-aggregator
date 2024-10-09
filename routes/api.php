@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\NewsController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -20,4 +21,11 @@ Route::group([
         Route::get('request', [UserController::class, 'requestPasswordReset'])->name('password.reset');
         Route::put('', [UserController::class, 'updatePassword']);
     });
+});
+
+Route::group([
+    'middleware' => 'auth:sanctum',
+    'prefix' => 'news'
+], function() {
+    Route::get('', [NewsController::class, 'index']);
 });
