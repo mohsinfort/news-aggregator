@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\News\GetNewsListRequest;
 use App\Repositories\NewsRepository; 
 
 class NewsController extends Controller
@@ -13,9 +14,9 @@ class NewsController extends Controller
         $this->newsRepository = $newsRepository;
     }
 
-    public function index()
+    public function index(GetNewsListRequest $request)
     {
-        $data = $this->newsRepository->getNewsList();
+        $data = $this->newsRepository->getNewsList($request);
 
         return response()->json($data, 200);
     }
