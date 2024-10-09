@@ -40,6 +40,10 @@ class ImportNewsDataJob implements ShouldQueue
      */
     public function handle(): void
     {
+        /*
+        - TODO: Have to handle data duplication as on every next Api call need to get data that 
+        - was not fetched previously.
+        */
         $newsApiData = $this->getNewsData($this->newsApiUrl, 'country=us&apiKey='.$this->newsApikey);
         $extractedData = $this->prepareNewsApiData($newsApiData);
         NewsRepository::importNewsData($extractedData);
