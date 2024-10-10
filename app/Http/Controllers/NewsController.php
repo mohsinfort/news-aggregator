@@ -21,11 +21,13 @@ class NewsController extends Controller
         $data = $this->newsRepository->getNewsList(
             $request->title,
             $request->type,
+            $request->source,
             $request->published_at_from,
             $request->published_at_to
         );
 
-        return response()->json($data, 200);
+        // Send Response back along with query params in pagination links
+        return response()->json($data->withQueryString(), 200);
     }
 
     public function getNewsListByUserPrefrences(Request $request)
@@ -36,7 +38,8 @@ class NewsController extends Controller
             $userPrefrences->news_source,
         );
 
-        return response()->json($data, 200);
+        // Send Response back along with query params in pagination links
+        return response()->json($data->withQueryString(), 200);
     }
 
     public function getNewsById(int $id)
