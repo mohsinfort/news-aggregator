@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\DataObject\NewsSourceData;
 use App\Repositories\NewsRepository;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -76,6 +77,7 @@ class ImportNewsDataJob implements ShouldQueue
                 "url" => $item['url'],
                 "published_at" => Carbon::parse($item['publishedAt']),
                 "type" => "general",
+                "source" => NewsSourceData::NEWSAPI,
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ];
@@ -98,6 +100,7 @@ class ImportNewsDataJob implements ShouldQueue
                 "url" => $item['url'],
                 "published_at" => Carbon::parse($item['published_date']),
                 "type" => $item['section'],
+                "source" => NewsSourceData::NEW_YORK_TIMES,
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ];
@@ -120,6 +123,7 @@ class ImportNewsDataJob implements ShouldQueue
                 "url" => $item['webUrl'],
                 "published_at" => Carbon::parse($item['webPublicationDate']),
                 "type" => $item['sectionName'],
+                "source" => NewsSourceData::THE_GUARDIAN,
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ];
