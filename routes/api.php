@@ -10,12 +10,12 @@ Route::group([
 ], function () {
     Route::post('register', [UserController::class, 'register']);
     Route::post('login', [UserController::class, 'login']);
-    Route::group([
-        'prefix' => 'password-reset'
-    ], function () {
-        Route::post('request', [UserController::class, 'requestPasswordReset'])->name('password.reset');
-        Route::put('', [UserController::class, 'updatePassword']);
-    });
+
+    Route::post('/forgot-password', [UserController::class, 'requestPasswordReset'])
+        ->middleware('guest')->name('password.email');
+
+    Route::post('/reset-password', [UserController::class, 'updatePassword'])
+        ->middleware('guest')->name('password.update');
 });
 
 Route::group([
