@@ -17,7 +17,12 @@ class NewsController extends Controller
 
     public function index(GetNewsListRequest $request)
     {
-        $data = $this->newsRepository->getNewsList($request);
+        $data = $this->newsRepository->getNewsList(
+            $request->title,
+            $request->type,
+            $request->published_at_from,
+            $request->published_at_to
+        );
 
         return response()->json($data, 200);
     }

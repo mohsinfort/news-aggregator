@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Http\Requests\News\GetNewsListRequest;
 use App\Models\News;
 
 class NewsRepository
@@ -19,24 +18,24 @@ class NewsRepository
         return News::insert($data);
     }
 
-    public function getNewsList(GetNewsListRequest $request)
+    public function getNewsList(?string $title = null, ?string $type = null, ?string $published_at_from = null, ?string $published_at_to = null)
     {
         /*
         * Can implement mysql fulltext search or other search services like milisearch, algolia etc.
         */
         return $this->news
             ->select('id', 'title', 'url','type')
-            ->when($request->title, function ($query) use ($request) {
-                $query->where('title', 'LIKE', '%'.$request->title.'%');
+            ->when($title, function ($query) use ($title) {
+                $query->where('title', 'LIKE', '%'.$title.'%');
             })
-            ->when($request->type, function ($query) use ($request) {
-                $query->where('type', 'LIKE', '%'.$request->type.'%');
+            ->when($type, function ($query) use ($type) {
+                $query->where('type', 'LIKE', '%'.$type.'%');
             })
-            ->when($request->published_at_from, function ($query) use ($request) {
-                $query->whereDate('published_at', '>=' , $request->published_at_from);
+            ->when($published_at_from, function ($query) use ($published_at_from) {
+                $query->whereDate('published_at', '>=' , $published_at_from);
             })
-            ->when($request->published_at_to, function ($query) use ($request) {
-                $query->whereDate('published_at', '<=' , $request->published_at_to);
+            ->when($published_at_to, function ($query) use ($published_at_to) {
+                $query->whereDate('published_at', '<=' , $published_at_to);
             })
             ->paginate(15);
     }
