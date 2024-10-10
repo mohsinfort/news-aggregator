@@ -30,6 +30,10 @@ class GetNewsListRequest extends FormRequest
                 'nullable',
                 'string'
             ],
+            "source" => [
+                'nullable',
+                'string',
+            ],
             'published_at_from' => [
                 'nullable',
                 'date',
