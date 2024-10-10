@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\News\GetNewsListRequest;
 use App\Repositories\NewsRepository;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Lang;
 
 class NewsController extends Controller
@@ -22,6 +23,17 @@ class NewsController extends Controller
             $request->type,
             $request->published_at_from,
             $request->published_at_to
+        );
+
+        return response()->json($data, 200);
+    }
+
+    public function getNewsListByUserPrefrences(Request $request)
+    {
+        $userPrefrences = $request->user()->userPrefrence;
+        $data = $this->newsRepository->getNewsListByUserPrefrence(
+            $userPrefrences->news_type,
+            $userPrefrences->news_source,
         );
 
         return response()->json($data, 200);

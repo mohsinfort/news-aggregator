@@ -23,6 +23,7 @@ Route::group([
     'prefix' => 'news'
 ], function() {
     Route::get('', [NewsController::class, 'index']);
+    Route::get('user/prefrences', [NewsController::class, 'getNewsListByUserPrefrences']);
     Route::get('{id}', [NewsController::class, 'getNewsById']);
 });
 
