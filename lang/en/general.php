@@ -17,4 +17,7 @@ return [
     'invalidData' => 'The given data was invalid.',
     'pleaseContactSupportWithCode' => 'Unexpected error occurred, please contact support. Error code: :code',
     'wentWrong' => 'Something went wrong',
+    'successfullyCreated' => 'Successfully created :model',
+    'successfullyUpdated' => 'Successfully updated :model',
+    'successfullyDeleted' => 'Successfully deleted :model',
 ];
