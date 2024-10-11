@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\DataObject\Test\AuthData;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -14,7 +15,7 @@ class UserFactory extends Factory
     /**
      * The current password being used by the factory.
      */
-    protected static ?string $password;
+    protected static ?string $password = AuthData::PASSWORD;
 
     /**
      * Define the model's default state.
