@@ -15,10 +15,10 @@ Route::group([
     Route::post('login', [UserController::class, 'login']);
 
     Route::post('/forgot-password', [UserController::class, 'requestPasswordReset'])
-        ->middleware('guest')->name('password.email');
+        ->name('password.email');
 
     Route::post('/reset-password', [UserController::class, 'updatePassword'])
-        ->middleware('guest')->name('password.update');
+        ->middleware('guest')->name('password.reset');
 });
 Route::group([
     'middleware' => ['auth:sanctum', 'verified'],
