@@ -9,6 +9,9 @@ Route::group([
     'prefix' => 'auth',
 ], function () {
     Route::post('register', [UserController::class, 'register']);
+    Route::get('/email/verify/{id}/{hash}', [UserController::class, 'verifyEmail'])
+        ->middleware(['signed'])->name('verification.verify');
+
     Route::post('login', [UserController::class, 'login']);
 
     Route::post('/forgot-password', [UserController::class, 'requestPasswordReset'])
@@ -17,25 +20,26 @@ Route::group([
     Route::post('/reset-password', [UserController::class, 'updatePassword'])
         ->middleware('guest')->name('password.update');
 });
-
 Route::group([
-    'middleware' => 'auth:sanctum',
-    'prefix' => 'news'
+    'middleware' => ['auth:sanctum', 'verified'],
 ], function() {
-    Route::get('', [NewsController::class, 'index']);
-    Route::get('user/prefrences', [NewsController::class, 'getNewsListByUserPrefrences']);
-    Route::get('{id}', [NewsController::class, 'getNewsById']);
-});
-
-Route::group([
-    'middleware' => 'auth:sanctum',
-    'prefix' => 'user'
-], function() {
-    Route::post('logout', [UserController::class, 'logout']);
+    Route::group([
+        'prefix' => 'news'
+    ], function() {
+        Route::get('', [NewsController::class, 'index']);
+        Route::get('user/prefrences', [NewsController::class, 'getNewsListByUserPrefrences']);
+        Route::get('{id}', [NewsController::class, 'getNewsById']);
+    });
 
     Route::group([
-         'prefix' => 'prefrences'
-    ], function () {
-        Route::post('', [UserPreferenceController::class, 'updateUserPrefrences']);
+        'prefix' => 'user'
+    ], function() {
+        Route::post('logout', [UserController::class, 'logout']);
+
+        Route::group([
+            'prefix' => 'prefrences'
+        ], function () {
+            Route::post('', [UserPreferenceController::class, 'updateUserPrefrences']);
+        });
     });
 });

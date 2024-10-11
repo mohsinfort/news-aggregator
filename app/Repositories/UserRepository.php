@@ -20,7 +20,6 @@ class UserRepository
             'name' => $name,
             'email' => $email,
             'password' => bcrypt($password),
-            'email_verified_at' => Carbon::now(), // TODO: email should be verified by send link at given email address
         ]);
     }
 

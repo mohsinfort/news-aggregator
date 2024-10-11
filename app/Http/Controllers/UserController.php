@@ -6,8 +6,12 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterUserRequest;
 use App\Http\Requests\Auth\RequestPasswordResetRequest;
 use App\Http\Requests\Auth\UpdatePasswordRequest;
+use App\Models\User;
 use App\Repositories\UserRepository;
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Lang;
@@ -26,7 +30,8 @@ class UserController extends Controller
     public function register(RegisterUserRequest $request)
     {
         try{
-            $this->userRepository->createUser($request->name, $request->email, $request->password);
+            $user = $this->userRepository->createUser($request->name, $request->email, $request->password);
+            event(new Registered($user));
 
             return response()->json([
                 'message' => Lang::get('auth.successfullyCreatedAccount')
@@ -37,6 +42,20 @@ class UserController extends Controller
 
             return response()->json(['errors' => Lang::get('general.pleaseContactSupportWithCode', ['code' => 500])], 500);
         }
+    }
+
+    public function verifyEmail(Request $request)
+    {
+        $user = User::find($request->route('id'));
+
+        if (!hash_equals((string) $request->route('hash'), sha1($user->getEmailForVerification()))) {
+            throw new AuthorizationException;
+        }
+
+        if ($user->markEmailAsVerified())
+            event(new Verified($user));
+
+        return response()->json(['message' => Lang::get('auth.successfullyVerifiedEmail')], 200);
     }
 
     public function login(LoginRequest $request)

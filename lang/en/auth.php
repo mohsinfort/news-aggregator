@@ -17,7 +17,8 @@ return [
     'password' => 'The provided password is incorrect.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
 
-    'successfullyCreatedAccount' => 'Account successfully created, please login to use the platform',
+    'successfullyCreatedAccount' => 'Account successfully created, please verify your email',
+    'successfullyVerifiedEmail' => 'Email Verified Successfully',
     'successfullyLoggedIn' => 'User Logged In successfully',
     'successfullyLoggedout' => 'User Logged Out successfully',
     'successfullySentPasswordResetLink' => 'Password reset link sent to your email.',
