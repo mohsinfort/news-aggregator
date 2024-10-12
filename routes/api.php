@@ -9,15 +9,15 @@ Route::group([
     'prefix' => 'auth',
 ], function () {
     Route::post('register', [UserController::class, 'register']);
-    Route::get('/email/verify/{id}/{hash}', [UserController::class, 'verifyEmail'])
+    Route::get('email/verify/{id}/{hash}', [UserController::class, 'verifyEmail'])
         ->middleware(['signed'])->name('verification.verify');
 
     Route::post('login', [UserController::class, 'login']);
 
-    Route::post('/forgot-password', [UserController::class, 'requestPasswordReset'])
+    Route::post('forgot-password', [UserController::class, 'requestPasswordReset'])
         ->name('password.email');
 
-    Route::post('/reset-password', [UserController::class, 'updatePassword'])
+    Route::post('reset-password', [UserController::class, 'updatePassword'])
         ->middleware('guest')->name('password.reset');
 });
 Route::group([
