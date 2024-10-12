@@ -42,4 +42,11 @@ class UserFactory extends Factory
             'email_verified_at' => null,
         ]);
     }
+
+    public function withEmail($email)
+    {
+        return $this->state(fn () => [
+            'email' => $email,
+        ]);
+    }
 }
