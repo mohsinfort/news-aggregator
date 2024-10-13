@@ -6,6 +6,7 @@ use App\Http\Controllers\UserPreferenceController;
 use Illuminate\Support\Facades\Route;
 
 Route::group([
+    'middleware' => 'throttle:6,1',
     'prefix' => 'auth',
 ], function () {
     Route::post('register', [UserController::class, 'register']);
@@ -21,7 +22,7 @@ Route::group([
         ->middleware('guest')->name('password.reset');
 });
 Route::group([
-    'middleware' => ['auth:sanctum', 'verified'],
+    'middleware' => ['verified', 'auth:sanctum', 'throttle:6,1'],
 ], function() {
     Route::group([
         'prefix' => 'news'
