@@ -26,7 +26,7 @@ class ImportNewsData extends Command
      */
     public function handle()
     {
-        ImportNewsDataJob::dispatch();//->onQueue('low');
+        ImportNewsDataJob::dispatch()->onQueue('low');
 
         $this->info('Import news data from different channels');
     }

@@ -74,6 +74,7 @@ services:
             timeout: 5s
 
     redis:
+        command: redis-server --appendonly no
         image: 'redis:alpine'
         container_name: news-aggregator-redis
         ports:
@@ -89,6 +90,22 @@ services:
                 - ping
             retries: 3
             timeout: 5s
+
+    queue:
+        build:
+            context: .
+            dockerfile: ./docker/queue/queue.dockerfile
+        container_name: news-aggregator-queue
+        command: sh -c "/bin/sleep 10 && /usr/local/bin/wait-for-it-shell api:9000 -- php /var/www/html/artisan horizon"
+        restart: unless-stopped
+        volumes:
+            - ./:/var/www/html
+            - ./docker/queue/php.ini:/usr/local/etc/php/conf.d/local.ini
+        depends_on:
+            - redis
+            - api
+        networks:
+            - sail
 
 networks:
     sail:
