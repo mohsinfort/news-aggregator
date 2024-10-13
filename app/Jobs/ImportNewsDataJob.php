@@ -4,10 +4,12 @@ namespace App\Jobs;
 
 use App\DataObject\NewsSourceData;
 use App\Repositories\NewsRepository;
+use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class ImportNewsDataJob implements ShouldQueue
 {
@@ -45,17 +47,33 @@ class ImportNewsDataJob implements ShouldQueue
         - TODO: Have to handle data duplication as on every next Api call need to get data that 
         - was not fetched previously.
         */
-        $newsApiData = $this->getNewsData($this->newsApiUrl, 'country=us&apiKey='.$this->newsApikey);
-        $extractedData = $this->prepareNewsApiData($newsApiData);
-        NewsRepository::importNewsData($extractedData);
-
-        $newYorkTimesData = $this->getNewsData($this->newYorkTimesApiUrl, 'api-key='.$this->newYorkTimesApiKey);
-        $extractedData = $this->prepareNewYorkTimesData($newYorkTimesData);
-        NewsRepository::importNewsData($extractedData);
-
-        $guardianData = $this->getNewsData($this->theGuardianAPIUrl, 'api-key='.$this->theGuardianApiKey);
-        $extractedData = $this->prepareGuardianData($guardianData);
-        NewsRepository::importNewsData($extractedData);
+        try {
+            $newsApiData = $this->getNewsData($this->newsApiUrl, 'country=us&apiKey='.$this->newsApikey);
+            if(count($newsApiData) && isset($newsApiData["status"]) && $newsApiData["status"] == "ok") {
+                $extractedData = $this->prepareNewsApiData($newsApiData);
+                NewsRepository::importNewsData($extractedData);
+            } else {
+                Log::warning('ImportNewsDataJob@handle', ["No data found to import from " . NewsSourceData::NEWSAPI]);
+            }
+    
+            $newYorkTimesData = $this->getNewsData($this->newYorkTimesApiUrl, 'api-key='.$this->newYorkTimesApiKey);
+            if(count($newYorkTimesData) && isset($newYorkTimesData["status"]) && $newYorkTimesData["status"] == "OK") {
+                $extractedData = $this->prepareNewYorkTimesData($newYorkTimesData);
+                NewsRepository::importNewsData($extractedData);
+            } else {
+                Log::warning('ImportNewsDataJob@handle', ["No data found to import from " . NewsSourceData::NEW_YORK_TIMES]);
+            }
+    
+            $guardianData = $this->getNewsData($this->theGuardianAPIUrl, 'api-key='.$this->theGuardianApiKey);
+            if(count($guardianData) && isset($guardianData["response"]["status"]) && $guardianData["response"]["status"] == "ok") {
+                $extractedData = $this->prepareGuardianData($guardianData);
+                NewsRepository::importNewsData($extractedData);
+            } else {
+                Log::warning('ImportNewsDataJob@handle', ["No data found to import from " . NewsSourceData::THE_GUARDIAN]);
+            }
+        } catch(Exception $e) {
+            Log::error('ImportNewsDataJob@handle', [$e]);
+        }
     }
 
     private function getNewsData(string $url, string $params)
