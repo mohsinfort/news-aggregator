@@ -14,6 +14,7 @@ This news aggregator application is designed to provide users with a centralized
 - Install [docker](https://www.docker.com/get-started/)
 - Install [docker-compose](https://docs.docker.com/compose/install/)
   - usually auto installed with docker client
+- Clone project and checkout to develop branch 
 - cp .env.example .env
   - update values for keys
 ## Run
